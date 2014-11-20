@@ -98,6 +98,7 @@
       elmInputBox.attr('data-mentions-input', 'true'); //Sets the attribute data-mentions-input to true -> Defines if the text area is already configured
       elmInputBox.bind('keydown', onInputBoxKeyDown); //Bind the keydown event to the text area
       elmInputBox.bind('keypress', onInputBoxKeyPress); //Bind the keypress event to the text area
+      elmInputBox.bind('keyup', onInputBoxKeyUp); //Bind the keyup event to the text area
       elmInputBox.bind('input', onInputBoxInput); //Bind the input event to the text area
       elmInputBox.bind('click', onInputBoxClick); //Bind the click event to the text area
       elmInputBox.bind('blur', onInputBoxBlur); //Bind the blur event to the text area
@@ -252,9 +253,21 @@
 
 	//Takes the keypress event
     function onInputBoxKeyPress(e) {
-      if(e.keyCode !== KEY.BACKSPACE) { //If the key pressed is not the backspace
-        var typedValue = String.fromCharCode(e.which || e.keyCode); //Takes the string that represent this CharCode
-        inputBuffer.push(typedValue); //Push the value pressed into inputBuffer
+      if(e.keyCode !== KEY.BACKSPACE) {
+        var typedValue = String.fromCharCode(e.which || e.keyCode);
+        if (typedValue === settings.triggerChar) {
+          inputBuffer.push(typedValue);
+        }
+      }
+    }
+
+    function onInputBoxKeyUp(e) {
+      if(e.keyCode !== KEY.BACKSPACE && !e.altKey) {
+        var typedValue = String.fromCharCode(e.which || e.keyCode);
+        if (typedValue.match(/\w/)) {
+          inputBuffer.push(typedValue);
+        }
+        $(domInput).trigger('input');
       }
     }
 
