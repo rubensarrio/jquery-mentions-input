@@ -12,7 +12,7 @@
 
   // Settings
   var KEY = { BACKSPACE : 8, TAB : 9, RETURN : 13, ESC : 27, LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40, COMMA : 188, SPACE : 32, HOME : 36, END : 35 }; // Keys "enum"
-  
+
   //Default settings
   var defaultSettings = {
     triggerChar   : '@', //Char that respond to event
@@ -20,17 +20,17 @@
     minChars      : 2, //Minimum chars to fire the event
     showAvatars   : true, //Show the avatars
     elastic       : true, //Grow the textarea automatically
-    classes       : { 
+    classes       : {
       autoCompleteItemActive : "active" //Classes to apply in each item
     },
     templates     : {
       wrapper                    : _.template('<div class="mentions-input-box"></div>'),
       autocompleteList           : _.template('<div class="mentions-autocomplete-list"></div>'),
-      autocompleteListItem       : _.template('<li data-ref-id="<%= id %>" data-ref-type="<%= type %>" data-display="<%= display %>"><%= content %></li>'),
+      autocompleteListItem       : _.template('<li data-ref-id="<%= id %>" data-ref-type="<%= type %>" data-display="<%= display %>"><%= content %> <small><%= email %></small></li>'),
       autocompleteListItemAvatar : _.template('<img src="<%= avatar %>" />'),
       autocompleteListItemIcon   : _.template('<div class="icon <%= icon %>"></div>'),
       mentionsOverlay            : _.template('<div class="mentions"><div></div></div>'),
-      mentionItemSyntax          : _.template('@[<%= value %>](<%= type %>:<%= id %>)'),
+      mentionItemSyntax          : _.template('[<%= value %>](<%= type %>:<%= id %>)'),
       mentionItemHighlight       : _.template('<strong><span><%= value %></span></strong>')
     }
   };
@@ -91,7 +91,7 @@
       }
 
       elmInputWrapper = elmInputBox.parent(); //Get the DOM element parent
-      elmWrapperBox = $(settings.templates.wrapper()); 
+      elmWrapperBox = $(settings.templates.wrapper());
       elmInputBox.wrapAll(elmWrapperBox); //Wrap all the text area into the div elmWrapperBox
       elmWrapperBox = elmInputWrapper.find('> div.mentions-input-box'); //Obtains the div elmWrapperBox that now contains the text area
 
@@ -141,7 +141,7 @@
       });
 
       mentionText = mentionText.replace(/\n/g, '<br />'); //Replace the escape character for <br />
-      mentionText = mentionText.replace(/ {2}/g, '&nbsp; '); //Replace the 2 preceding token to &nbsp; 
+      mentionText = mentionText.replace(/ {2}/g, '&nbsp; '); //Replace the 2 preceding token to &nbsp;
 
       elmInputBox.data('messageText', syntaxMessage); //Save the messageText to elmInputBox
       elmMentionsOverlay.find('div').html(mentionText); //Insert into a div of the elmMentionsOverlay the mention text
@@ -187,7 +187,7 @@
       hideAutoComplete();
 
       // Mentions and syntax message
-      var updatedMessageText = start + mention.value + ' ' + end;
+      var updatedMessageText = start + '@' + mention.value + ' ' + end;
       elmInputBox.val(updatedMessageText); //Set the value to the txt area
       updateValues();
 
@@ -292,7 +292,7 @@
         case KEY.DOWN:
           var elmCurrentAutoCompleteItem = null;
           if (e.keyCode === KEY.DOWN) { //If the key pressed was DOWN
-            if (elmActiveAutoCompleteItem && elmActiveAutoCompleteItem.length) { //If elmActiveAutoCompleteItem exits 
+            if (elmActiveAutoCompleteItem && elmActiveAutoCompleteItem.length) { //If elmActiveAutoCompleteItem exits
               elmCurrentAutoCompleteItem = elmActiveAutoCompleteItem.next(); //Gets the next li element in the list
             } else {
               elmCurrentAutoCompleteItem = elmAutocompleteList.find('li').first(); //Gets the first li element found
@@ -361,6 +361,7 @@
           'id'      : utils.htmlEncode(item.id),
           'display' : utils.htmlEncode(item.name),
           'type'    : utils.htmlEncode(item.type),
+          'email'    : utils.htmlEncode(item.email),
           'content' : utils.highlightTerm(utils.htmlEncode((item.name)), query)
         })).attr('data-uid', itemUid); //Inserts the new item to list
 
